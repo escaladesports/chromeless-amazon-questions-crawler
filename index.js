@@ -11,7 +11,7 @@ function crawlQuestions(asin, opt) {
 	return new Promise((resolve, reject) => {
 		opt = Object.assign({}, defaultOptions, opt)
 		let result
-		new Chromeless({
+		const chromeless = new Chromeless({
 				remote: {
 					endpointUrl: opt.endpointUrl,
 					apiKey: opt.apiKey
@@ -40,7 +40,7 @@ function crawlQuestions(asin, opt) {
 						questions: []
 					})
 				}
-				else{
+				else {
 					reject(err)
 				}
 			})
@@ -49,7 +49,7 @@ function crawlQuestions(asin, opt) {
 
 function crawlSinglePage(obj, opt) {
 	return new Promise((resolve, reject) => {
-		new Chromeless({
+		const chromeless = new Chromeless({
 				remote: {
 					endpointUrl: opt.endpointUrl,
 					apiKey: opt.apiKey
@@ -65,9 +65,7 @@ function crawlSinglePage(obj, opt) {
 				obj.author = data.author
 				resolve()
 			})
-			.catch((err) => {
-				reject(err)
-			})
+			.catch(reject)
 	})
 }
 

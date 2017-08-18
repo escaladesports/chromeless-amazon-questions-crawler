@@ -8,7 +8,7 @@
     "test": "node test"
   },
   "dependencies": {
-    "amazon-questions-crawler-eval": "escaladesports/amazon-questions-crawler-eval#v0.1.1",
+    "amazon-questions-crawler-eval": "escaladesports/amazon-questions-crawler-eval#v0.1.3",
     "chromeless": "^1.2.0",
     "dotenv": "^4.0.0",
     "random-ua": "^0.0.6"
