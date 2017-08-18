@@ -7,31 +7,23 @@ const defaultOptions = {
 	stopAtQuestionId: false
 }
 
-function crawlQuestions(asin, opt) {
+
+module.exports = (asin, opt) => {
 	return new Promise((resolve, reject) => {
 		opt = Object.assign({}, defaultOptions, opt)
 		let result
 		const chromeless = new Chromeless({
-				remote: {
-					endpointUrl: opt.endpointUrl,
-					apiKey: opt.apiKey
-				}
-			})
+			remote: {
+				endpointUrl: opt.endpointUrl,
+				apiKey: opt.apiKey
+			}
+		})
 			.setUserAgent(opt.userAgent || randomUa.generate())
 			.goto(opt.page.replace('{{asin}}', asin))
 			.wait(evalFunctions.wait.questionBlock)
 			.evaluate(evalFunctions.allQuestions, opt)
 			.end()
-			.then(content => {
-				result = content
-				// Crawl individual questions pages
-				const promises = []
-				for (let i = result.questions.length; i--;) {
-					promises.push(crawlSinglePage(result.questions[i], opt))
-				}
-				return Promise.all(promises)
-			})
-			.then(() => resolve(result))
+			.then(resolve)
 			.catch(err => {
 				if (err.toString().indexOf('TimeoutError') > -1) {
 					// No questions
@@ -46,27 +38,3 @@ function crawlQuestions(asin, opt) {
 			})
 	})
 }
-
-function crawlSinglePage(obj, opt) {
-	return new Promise((resolve, reject) => {
-		const chromeless = new Chromeless({
-				remote: {
-					endpointUrl: opt.endpointUrl,
-					apiKey: opt.apiKey
-				}
-			})
-			.setUserAgent(opt.userAgent || randomUa.generate())
-			.goto(obj.link)
-			.wait(evalFunctions.wait.questionDate)
-			.evaluate(evalFunctions.singleQuestion, opt)
-			.end()
-			.then(data => {
-				obj.date = data.date
-				obj.author = data.author
-				resolve()
-			})
-			.catch(reject)
-	})
-}
-
-module.exports = crawlQuestions
