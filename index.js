@@ -7,25 +7,25 @@ const defaultOptions = {
 	stopAtQuestionId: false
 }
 
-
 module.exports = (asin, opt) => {
 	return new Promise((resolve, reject) => {
 		opt = Object.assign({}, defaultOptions, opt)
 		let result
 		const chromeless = new Chromeless({
-			remote: {
-				endpointUrl: opt.endpointUrl,
-				apiKey: opt.apiKey
-			}
-		})
-			.setUserAgent(opt.userAgent || randomUa.generate())
+				remote: {
+					endpointUrl: opt.endpointUrl,
+					apiKey: opt.apiKey
+				},
+				waitTimeout: 2000
+			})
+		chromeless.setUserAgent(opt.userAgent || randomUa.generate())
 			.goto(opt.page.replace('{{asin}}', asin))
-			.wait(evalFunctions.wait.questionBlock)
 			.evaluate(evalFunctions.allQuestions, opt)
 			.end()
 			.then(resolve)
 			.catch(err => {
-				if (err.toString().indexOf('TimeoutError') > -1) {
+				chromeless.end()
+				if (err.toString().indexOf('timed out') > -1) {
 					// No questions
 					resolve({
 						title: false,
