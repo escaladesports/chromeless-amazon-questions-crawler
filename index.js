@@ -12,10 +12,6 @@ module.exports = (asin, opt) => {
 		opt = Object.assign({}, defaultOptions, opt)
 		let result
 		const chromeless = new Chromeless({
-				remote: {
-					endpointUrl: opt.endpointUrl,
-					apiKey: opt.apiKey
-				},
 				waitTimeout: 2000
 			})
 		chromeless.setUserAgent(opt.userAgent || randomUa.generate())
